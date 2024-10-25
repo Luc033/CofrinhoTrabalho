@@ -2,7 +2,6 @@ package edu.luc.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Cofrinho {
     List<Moeda> moedaList;
@@ -21,57 +20,65 @@ public class Cofrinho {
 
     public void remover(Moeda moeda) {
         if (!moedaList.isEmpty()) {
-            System.out.println("Removendo: "+ moeda);
-            moedaList.remove(moeda);
+            if (moedaList.contains(moeda)) {
+                System.out.println("Removendo: " + moeda);
+                moedaList.remove(moeda);
+            } else {
+                System.out.println("Não exite na lista. Tente novamente.");
+
+            }
         } else {
             System.out.println("Lista vazia. Tente novamente.");
         }
     }
 
     public void listagemMoedas() {
-        System.out.println("Todas as moedas do cofrinho: \n" + moedaList);
+        if (!moedaList.isEmpty()) {
+            System.out.println("Todas as moedas do cofrinho: \n" + moedaList);
+        } else {
+            System.out.println("Cofrinho vazio. Tente novamente.");
+
+        }
     }
 
     public void totalConvertido() {
-        if(!moedaList.isEmpty()) {
-            double tDolar = 0;
-            for (Dolar d : getDolares()) {
-                tDolar = d.converter();
-            }
-            double tEuro = 0;
-            for (Euro e : getEuros()) {
-                tEuro = e.converter();
-            }
-            double tReal = 0;
-            for (Real r : getReais()) {
-                tDolar = r.converter();
-            }
-            double total = tDolar + tReal + tEuro;
-            //System.out.println(String.format("Dolares totais: $%.2f | Euros totais: €%.2f | Reais totais: R$%.2f", getDolares(), getEuros(), getReais()));
-            System.out.println("Valor total convertido em reais do cofrinho: R$" + total);
-        }else {
+        if (!moedaList.isEmpty()) {
+            double tDolarCovertido = new Dolar(getDolares()).converter();
+            double tDolar = getDolares();
+            double tEuroConvertido = new Euro(getEuros()).converter();
+            double tEuro = getEuros();
+            double tRealConvertido = new Real(getReais()).converter();
+            double tReal = getReais();
+            double total = tDolarCovertido + tRealConvertido + tEuroConvertido;
+            System.out.println(String.format("Dolares totais: $%.2f | Euros totais: €%.2f | Reais totais: R$%.2f", tDolar, tEuro, tReal));
+            System.out.println(String.format("Valor total convertido em reais do cofrinho: R$%.2f", total));
+        } else {
             System.out.println("Cofrinho vazio. Tente novamente.");
         }
     }
 
-    public List<Dolar> getDolares() {
-        return moedaList.stream()
+    // DÓLAR
+    public double getDolares() {
+        double dolTotal = moedaList.stream()
                 .filter(moeda -> moeda instanceof Dolar)
-                .map(moeda -> (Dolar) moeda)
-                .collect(Collectors.toList());
+                .mapToDouble(moeda -> ((Dolar) moeda).getValor()).sum();
+        return dolTotal;
     }
 
-    public List<Euro> getEuros() {
-        return moedaList.stream()
+    // EURO
+    public double getEuros() {
+        double euTotal = moedaList.stream()
                 .filter(moeda -> moeda instanceof Euro)
-                .map(moeda -> (Euro) moeda)
-                .collect(Collectors.toList());
+                .mapToDouble(moeda -> ((Euro) moeda).getValor()).sum();
+        return euTotal;
     }
 
-    public List<Real> getReais() {
-        return moedaList.stream()
+    // REAL
+    public double getReais() {
+        double reTotal = moedaList.stream()
                 .filter(moeda -> moeda instanceof Real)
-                .map(moeda -> (Real) moeda)
-                .collect(Collectors.toList());
+                .mapToDouble(moeda -> ((Real) moeda).getValor()).sum();
+        return reTotal;
     }
+
 }
