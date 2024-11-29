@@ -1,5 +1,10 @@
 package edu.luc.model;
 
+import edu.luc.service.ApiConsumo;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 /**
  * Classe abstrata Moeda possui
  * Declarando constantes estáticas para referência em cáculos de conversão.
@@ -15,10 +20,23 @@ package edu.luc.model;
  * Métodos abstratos que serão implementados nas classes filhas: Dolar, Euro e Real.
  */
 public abstract class Moeda {
-    static final double CAMBIO_DOLAR = 5.69;
-    static final double CAMBIO_EURO = 6.13;
+    static ApiConsumo apiConsumo;
+    static {
+        try {
+            apiConsumo = new ApiConsumo();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static final double CAMBIO_DOLAR = apiConsumo.getCAMBIO_DOLAR();
+    static final double CAMBIO_EURO = apiConsumo.getCAMBIO_EURO();
     private double valor;
-    public Moeda(double valor) {
+    public Moeda(double valor){
         this.valor = valor;
     }
     public double getValor() {

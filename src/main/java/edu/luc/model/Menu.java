@@ -34,6 +34,7 @@ public class Menu {
                 verificarOpcao(opcao, cofrinho);
             } catch (InputMismatchException e) {
                 System.out.println("Opção inválida.");
+                ler.nextLine();
             }
         }
     }
@@ -57,6 +58,7 @@ public class Menu {
                 break;
             default:
                 System.out.println("Valor inválido");
+                break;
         }
     }
 
@@ -99,6 +101,7 @@ public class Menu {
                     break;
                 default:
                     System.out.println("Valor inválido");
+                    break;
             }
         } catch (InputMismatchException e) {
             System.out.println("Opção inválida.");
