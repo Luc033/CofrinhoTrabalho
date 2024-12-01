@@ -147,13 +147,13 @@ classDiagram
    }
    
    Cofrinho <|--* Menu : gerencia
-   Moeda <|--* Cofrinho : depende
+   Moeda --* Cofrinho : depende
    Moeda ..> ApiConsumo : consome
    Moeda <|-- Dolar
    Moeda <|-- Euro
    Moeda <|-- Real
    Cofrinho o--|> TipoMoedas : verifica
-   ApiConsumo <|--* CurrencyApiResponse : desserializa
+   ApiConsumo --* CurrencyApiResponse : desserializa
 ```
 
 ---
