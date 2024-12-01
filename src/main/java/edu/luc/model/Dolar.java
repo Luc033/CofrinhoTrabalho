@@ -9,12 +9,11 @@ public class Dolar extends Moeda {
     /**
      * Construtor da classe Dolar.
      *
-     * @param valor O valor em dólares.
+     * @param valor O valor em euros.
      */
     public Dolar(double valor) {
         super(valor);
     }
-
     /**
      * Exibe informações sobre a moeda no console.
      * Mostra o valor armazenado no formato "Dólares: $valor".

@@ -6,24 +6,23 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 /**
- * Classe abstrata Moeda, que serve como base para outras classes de moedas como Dólar, Euro e Real.
- * Esta classe contém a lógica para armazenar o valor da moeda e calcular sua conversão com base nas taxas obtidas da API.
+ * Classe abstrata Moeda.
  *
- * A classe é responsável por:
- * 1. Definir constantes estáticas para as taxas de câmbio (Dólar e Euro).
- * 2. Armazenar o valor da moeda.
- * 3. Inicializar o valor da moeda através de um construtor.
- * 4. Fornecer métodos getters e setters para manipular o valor.
- * 5. Definir métodos abstratos `info` e `converter`, que serão implementados pelas classes filhas.
+ * Serve como base para a representação de diferentes moedas (como Dólar, Euro e Real), definindo atributos e comportamentos comuns,
+ * além de fornecer métodos abstratos para implementação específica nas subclasses.
  *
- * A classe também realiza a instância da classe `ApiConsumo` para obter as taxas de câmbio.
+ * Funcionalidades principais:
+ * - Armazenar o valor associado a uma moeda.
+ * - Permitir operações de soma e remoção de valores monetários.
+ * - Obter taxas de câmbio atualizadas através de uma API externa.
+ * - Oferecer métodos abstratos que as subclasses devem implementar para exibir informações e realizar conversões.
  */
 public abstract class Moeda {
 
-    // Instância da classe ApiConsumo para buscar as taxas de câmbio
+    // Instância da classe ApiConsumo para obter taxas de câmbio em tempo real
     static ApiConsumo apiConsumo;
 
-    // Bloco estático que inicializa a instância de ApiConsumo e lida com exceções
+    // Bloco estático responsável por inicializar a instância de ApiConsumo e lidar com possíveis exceções
     static {
         try {
             apiConsumo = new ApiConsumo();  // Inicializa a instância de ApiConsumo
@@ -36,17 +35,24 @@ public abstract class Moeda {
         }
     }
 
-    // Constantes estáticas para as taxas de câmbio
+    // Constantes estáticas para as taxas de câmbio da API externa
     static final double CAMBIO_DOLAR = apiConsumo.getCAMBIO_DOLAR();  // Taxa de câmbio do Dólar
     static final double CAMBIO_EURO = apiConsumo.getCAMBIO_EURO();    // Taxa de câmbio do Euro
 
-    // Atributo para armazenar o valor da moeda
+    // Atributo que armazena o valor monetário associado à moeda
     private double valor;
 
     /**
-     * Construtor que inicializa o valor da moeda.
+     * Construtor padrão da classe `Moeda`.
+     * Pode ser usado por classes filhas para criar uma instância sem definir um valor inicial.
+     */
+    public Moeda() {
+    }
+
+    /**
+     * Construtor que inicializa a moeda com um valor específico.
      *
-     * @param valor O valor da moeda a ser instanciado.
+     * @param valor O valor inicial da moeda.
      */
     public Moeda(double valor) {
         this.valor = valor;
@@ -68,6 +74,24 @@ public abstract class Moeda {
      */
     public void setValor(double valor) {
         this.valor = valor;
+    }
+
+    /**
+     * Adiciona um valor ao valor atual da moeda.
+     *
+     * @param valor O valor a ser somado ao valor atual.
+     */
+    public void somarValor(double valor){
+        this.valor += valor;
+    }
+
+    /**
+     * Subtrai um valor do valor atual da moeda.
+     *
+     * @param valor O valor a ser subtraído do valor atual.
+     */
+    public void removerValor(double valor){
+        this.valor -= valor;
     }
 
     /**
