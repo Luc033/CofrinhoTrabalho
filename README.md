@@ -1,58 +1,59 @@
 ---
 # CofrinhoTrabalho
-Projeto desenvolvido para entrega do trabalho do curso POO de minha graduação.
+Projeto desenvolvido para entrega do trabalho do curso Programação Orientada a Objetos de minha graduação.
 
-# 💵💰 **Cofrinho - Gestão financeira**  
+# 💵 **Cofrinho - Gestão financeira** 💰
 
-[![Java](https://img.shields.io/badge/Java-17-orange?style=flat&logo=java)](https://www.oracle.com/java/technologies/javase-downloads.html)  
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0-brightgreen?style=flat&logo=springboot)](https://spring.io/projects/spring-boot)  
+[![Java](https://img.shields.io/badge/Java-17-orange?style=flat&logo=java)](https://www.oracle.com/java/technologies/javase-downloads.html)
+[![Apache Maven](https://img.shields.io/badge/Apache%20Maven-C71A36?style=flat&logo=Apache%20Maven&logoColor=white)](https://maven.apache.org)
+![Gson](https://img.shields.io/badge/son-4285F4?style=flat&logo=google&logoColor=white)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Uma API RESTful desenvolvida em **Java 17** com **Spring Boot 3** para gerenciamento de informações bancárias como clientes, funcionalidades, cartões e notícias. Este projeto é um estudo prático no contexto do **DIO Claro Bootcamp 2024**.
+
+Um sistema desenvolvido com **Java 17** e gerenciado com **Apache Maven** que interage com o usuário por meio do terminal e fazendo o controle financeiro de entrada/saída de moedas e sua conversão em real. O projeto foi incrementado com consumo de api para conversão monetário fazendo uso da dependência **Gson**.
 
 ---
 
 ## 🎯 **Objetivo do Projeto**
 
 Este projeto tem como objetivo:
-- Desenvolver habilidades práticas em **Java Web**.
-- Aplicar conceitos fundamentais de **RESTful APIs**.
-- Gerenciar dados de um sistema bancário fictício.
+- Desenvolver habilidades práticas em **Java**.
+- Apronfundar a **lógica** de programação.
+- Revisar conceitos e paradigmas de **POO**.
+- Aplicar conceitos fundamentais de **HTTP**.
+- Gerenciar dados de um sistema **financeiro**.
+- Praticar desserialização de **json**.
 
 ---
 
 ## ⚙️ **Funcionalidades**
 
 ### **Entidades e Recursos**
-1. **Clientes**:
-   - Criar um cliente com:
-     - Nome
-     - Agência
-     - Número da conta
-2. **Funcionalidades**:
-   - Cadastrar uma funcionalidade com:
-     - Nome
-     - Ícone
-3. **Cartões**:
-   - Registrar um cartão com:
-     - Número
-     - Limite disponível
-4. **Notícias**:
-   - Adicionar notícias com:
-     - Título
-     - Ícone ilustrativo
+1. **Cofrinho**:
+   - Cria uma lista de moedas e gerenciar o fluxo de entrada e saída.
+2. **Moeda**:
+   - Classe abstrata que reutiliza códigos e abstrai conceitos físicos e possui subclasses:
+     - Real
+     - Dolar
+     - Euro
+3. **Menu**:
+   - Interage com o usuário por meio do console e gerencia o cofrinho.
+4. **ApiConsumo**:
+   - Consume uma API externa de taxas de câmbio para obter as taxas de conversão das moedas e as armazena:
+     - Câmbio de dolar para real: CAMBIO_DOLAR;
+     - Câmbio de euro para real: CAMBIO_EURO;
+5. **CurrencyApiResponse**:
+   - Armazena os respectivos valores desserializados da ApiConsumo e serve de base para realizar o consumo.
+     
 
 ---
 
 ## 🛠️ **Tecnologias Utilizadas**
 
 - **Java 17**  
-- **Spring Boot 3**  
-- **Maven/Gradle** para gerenciamento de dependências  
-- **JPA/Hibernate** para persistência de dados  
-- **Banco de Dados H2** (ambiente de teste, opcional para produção)  
-- **Thymeleaf** (futuro uso para views, se necessário)  
-- Ferramentas de teste como **Postman** ou **Swagger**.
+- **Maven** para gerenciamento de dependências.
+- **Gson** para desserialização de json.
+- Ferramentas de teste como **Postman**.
 
 ---
 
@@ -60,36 +61,35 @@ Este projeto tem como objetivo:
 
 ```plaintext
 src
-├── main
-│   ├── java
-│   │   └── com.example.api
-│   │       ├── controllers
-│   │       ├── entities
-│   │       ├── services
-│   │       ├── repositories
-│   │       └── config
-│   └── resources
-│       ├── application.yml
-│       └── data.sql
-└── test
-    └── java
-        └── com.example.api
+└── main
+    ├── java
+    │   └── edu
+    |        └── luc
+    |            ├── model 
+    │            ├── service
+    └── resources
+       └── application.properties
 ```
 ```mermaid
 classDiagram
-    ApiConsumo <.. CurrencyApiResponse
+    Menu *--|> Cofrinho : gerencia
+    Cofrinho o --|> TipoMoedas : verifica
     Cofrinho *--|> Moeda : depende
-    Moeda o--> ApiConsumo
+    Moeda ..> ApiConsumo : consome
     Moeda <|-- Dolar
     Moeda <|-- Euro
     Moeda <|-- Real
+   ApiConsumo <|--o CurrencyApiResponse : desserializa
 
     class Cofrinho {
         - listaMoedas : List<Moeda>
         + adicionar(Moeda)
         + remover(Moeda)
         + listagemMoedas()
-        + totalConvertido() : double
+        + totalConvertido()
+        + getReais() : double
+        + getDolares() : double
+        + getEuros() : double
     }
     class ApiConsumo {
       -URL : String
@@ -118,23 +118,42 @@ classDiagram
         - valor : double
         + info() : void
         + converter() : double
+        + removerValor(double valor) : void
+        + somarValor(double valor) : void
     }
 
     class Dolar {
-        + info() : void
-        + converter() : double
+        + info() : void (override)
+        + converter() : double (override)
     }
 
     class Euro {
-        + info() : void
-        + converter() : double
+        + info() : void (override)
+        + converter() : double (override)
     }
 
     class Real {
-        + info() : void
-        + converter() : double
+        + info() : void (override)
+        + converter() : double (override)
     }
 
+   class Menu {
+      - continuar : boolean
+      - cofrinho : Cofrinho
+      + executarMenu(Cofrinho cofrinho) : void
+      + verificarOpcao(int opcao, Cofrinho cofrinho) : void
+      + criandoMoedaNoMenu(Cofrinho cofrinho) : void
+      + removerUmaMoeda(Cofrinho cofrinho) : void
+   }
+
+   class TipoMoedas{
+      <<enum>>
+      + REAL
+      + DOLAR
+      + EURO
+      + GET_ID : int
+      + getId() : int
+   }
 ```
 
 ---
@@ -143,56 +162,19 @@ classDiagram
 
 1. **Clone o repositório**:
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   cd seu-repositorio
+   git clone https://github.com/Luc033/CofrinhoTrabalho.git
+   cd CofrinhoTrabalho
    ```
 
 2. **Configure o ambiente**:
-   - Certifique-se de ter o **Java 17** e **Gradle** instalados.
+   - Certifique-se de ter o **Java 17** ou superior.
 
-3. **Execute a aplicação**:
+3. **Execute a aplicação no CMD**:
+   No diretório da classe Main.java
    ```bash
-   ./gradlew bootRun
+   javac Main.java
+   java Main
    ```
-
-4. **Acesse os Endpoints**:
-   - Base URL: `http://localhost:8080`
-   - Use ferramentas como **Postman** para testar.
-
----
-
-## 🧪 **Exemplo de Uso**
-
-### **Cadastro de Cliente**
-- **Endpoint:** `POST /clientes`  
-- **Payload de Exemplo:**
-  ```json
-  {
-      "nome": "João da Silva",
-      "agencia": "1234",
-      "numeroConta": "56789-0"
-  }
-  ```
-
-### **Cadastro de Funcionalidade**
-- **Endpoint:** `POST /funcionalidades`  
-- **Payload de Exemplo:**
-  ```json
-  {
-      "nome": "Transferências",
-      "icone": "transfer_icon.png"
-  }
-  ```
-
----
-
-## 📂 **To-Do List**
-
-- [x] Implementar CRUD de clientes.  
-- [x] Criar endpoints para funcionalidades.  
-- [ ] Adicionar autenticação e segurança com Spring Security.  
-- [ ] Criar testes unitários e de integração.
-
 ---
 
 ## 📝 **Licença**
@@ -203,11 +185,9 @@ Este projeto está sob a licença [MIT](LICENSE). Sinta-se à vontade para usá-
 
 ## 📞 **Contato**
 
-- **Autor:** Seu Nome  
-- **E-mail:** seu.email@example.com  
-- **GitHub:** [seu-usuario](https://github.com/seu-usuario)  
-- **LinkedIn:** [Seu Perfil](https://linkedin.com/in/seu-perfil)
+- **Autor:** Lucas Melo  
+- **E-mail:** lucasrm33.contato@gmail.com
+- **GitHub:** [Luc033](https://github.com/Luc033)  
+- **LinkedIn:** [Lucas Melo](https://linkedin.com/in/lucas-melo-dev)
 
 ---
-
-Caso queira alterar algo ou adicionar detalhes extras, só avisar!
