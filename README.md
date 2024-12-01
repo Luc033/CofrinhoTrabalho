@@ -72,19 +72,10 @@ src
 ```
 ```mermaid
 classDiagram
-    Menu *--|> Cofrinho : gerencia
-    Cofrinho o --|> TipoMoedas : verifica
-    Cofrinho *--|> Moeda : depende
-    Moeda ..> ApiConsumo : consome
-    Moeda <|-- Dolar
-    Moeda <|-- Euro
-    Moeda <|-- Real
-   ApiConsumo <|--o CurrencyApiResponse : desserializa
-
     class Cofrinho {
         - listaMoedas : List<Moeda>
         + adicionar(Moeda)
-        + remover(Moeda)
+        + retirar(Moeda)
         + listagemMoedas()
         + totalConvertido()
         + getReais() : double
@@ -142,18 +133,25 @@ classDiagram
       - cofrinho : Cofrinho
       + executarMenu(Cofrinho cofrinho) : void
       + verificarOpcao(int opcao, Cofrinho cofrinho) : void
-      + criandoMoedaNoMenu(Cofrinho cofrinho) : void
-      + removerUmaMoeda(Cofrinho cofrinho) : void
+      + guardarMoeda(Cofrinho cofrinho) : void
+      + retirarUmaMoeda(Cofrinho cofrinho) : void
    }
 
    class TipoMoedas{
       <<enum>>
       + REAL
-      + DOLAR
-      + EURO
       + GET_ID : int
       + getId() : int
    }
+   
+   Cofrinho <|--* Menu : gerencia
+   Moeda <|--* Cofrinho : depende
+   Moeda ..> ApiConsumo : consome
+   Moeda <|-- Dolar
+   Moeda <|-- Euro
+   Moeda <|-- Real
+   Cofrinho o--|> TipoMoedas : verifica
+   ApiConsumo <|--* CurrencyApiResponse : desserializa
 ```
 
 ---
