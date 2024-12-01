@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Menu {
     private boolean continuar = true; // Controla o loop do menu principal
-    private Cofrinho cofrinho = new Cofrinho(); // Instância do cofrinho a ser manipulado
+    private static Cofrinho cofrinho = new Cofrinho(); // Instância do cofrinho a ser manipulado
 
 
     /**
@@ -20,15 +20,15 @@ public class Menu {
      * Inicia a execução do menu principal com o cofrinho associado.
      */
     public Menu() {
-        executarMenu(this.cofrinho);
+        executarMenu();
     }
 
     /**
      * Exibe o menu principal e processa as escolhas do usuário.
-     *
-     * @param cofrinho Instância do Cofrinho a ser manipulada.
+     * O menu apresenta opções para adicionar, remover, listar moedas e converter todas para Real.
+     * A entrada é tratada para evitar erros causados por valores inválidos.
      */
-    public void executarMenu(Cofrinho cofrinho) {
+    public void executarMenu() {
         Scanner ler = new Scanner(System.in);
 
         while (continuar) {
@@ -36,7 +36,7 @@ public class Menu {
                     \n<===================M=E=N=U===================>
                      |                                           |
                      |  1 -- Adicionar moedas no cofrinho        | 
-                     |  2 -- Remover moedas do cofrinho          | 
+                     |  2 -- Retirar moedas do cofrinho          | 
                      |  3 -- Listar todas as moedas do cofrinho  |
                      |  4 -- Converter todas as moedas para real |
                      |                                           |
@@ -46,7 +46,7 @@ public class Menu {
 
             try {
                 int opcao = ler.nextInt();
-                verificarOpcao(opcao, cofrinho);
+                verificarOpcao(opcao);
             } catch (InputMismatchException e) {
                 System.out.println("Opção inválida.");
                 ler.nextLine(); // Limpa o buffer do scanner
@@ -55,22 +55,22 @@ public class Menu {
     }
 
     /**
-     * Verifica a opção escolhida pelo usuário e executa a ação correspondente.
+     * Verifica a opção escolhida pelo usuário no menu principal.
+     * Realiza a ação correspondente, como adicionar ou remover moedas, listar ou converter.
      *
      * @param opcao Opção escolhida pelo usuário.
-     * @param cofrinho Instância do Cofrinho a ser manipulada.
      */
-    public void verificarOpcao(int opcao, Cofrinho cofrinho) {
+    public void verificarOpcao(int opcao) {
 
         switch (opcao) {
             case 0:
                 continuar = false; // Encerra o loop do menu
                 break;
             case 1:
-                criandoMoedaNoMenu(cofrinho); // Adiciona uma moeda
+                guardarMoeda(); // Adiciona uma moeda
                 break;
             case 2:
-                removerUmaMoeda(cofrinho); // Remove uma moeda
+                retirarUmaMoeda(); // Remove uma moeda
                 break;
             case 3:
                 cofrinho.listagemMoedas(); // Lista todas as moedas
@@ -88,10 +88,8 @@ public class Menu {
     /**
      * Permite ao usuário adicionar uma nova moeda ao cofrinho.
      * Solicita o tipo de moeda e o valor a ser depositado.
-     *
-     * @param cofrinho Instância do Cofrinho onde a moeda será adicionada.
      */
-    public void criandoMoedaNoMenu(Cofrinho cofrinho) {
+    public void guardarMoeda() {
         System.out.println("""
                 0-----------------(0)-----------------0
                 |  Digite o número da moeda desejada: |
@@ -106,31 +104,16 @@ public class Menu {
         Scanner ler = new Scanner(System.in);
         try {
             int opcao = ler.nextInt();
-            if (opcao == 0){
-                executarMenu(cofrinho); // Retorna ao menu principal
+            if (opcao == 0) {
+                executarMenu(); // Retorna ao menu principal
             }
             System.out.println("Quanto irá depositar?");
             Scanner leitura = new Scanner(System.in);
             leitura.useLocale(Locale.US);
             double valor = leitura.nextDouble();
+            leitura.nextLine();
+            cofrinho.adicionar(opcao, valor);
 
-            switch (opcao) {
-
-                case 1:
-                    Real real = new Real(valor);
-                    cofrinho.adicionar(real);
-                    break;
-                case 2:
-                    Dolar dolar = new Dolar(valor);
-                    cofrinho.adicionar(dolar);
-                    break;
-                case 3:
-                    Euro euro = new Euro(valor);
-                    cofrinho.adicionar(euro);
-                    break;
-                default:
-                    System.out.println("Valor inválido");
-            }
         } catch (InputMismatchException e) {
             System.out.println("Opção inválida.");
         }
@@ -140,26 +123,29 @@ public class Menu {
     /**
      * Permite ao usuário remover uma moeda específica do cofrinho.
      * Exibe as moedas presentes no cofrinho e solicita a escolha do usuário.
-     *
-     * @param cofrinho Instância do Cofrinho onde a moeda será removida.
+     * Verifica se o cofrinho contém moedas antes de tentar a remoção.
      */
-    public void removerUmaMoeda(Cofrinho cofrinho) {
+    public void retirarUmaMoeda() {
         if (!cofrinho.getMoedaList().isEmpty()) { // Verifica se o cofrinho não está vazio
             System.out.println("Moedas do cofrinho:");
             AtomicInteger counter = new AtomicInteger(1);
-            cofrinho.moedaList.forEach(m -> System.out.println(counter.getAndIncrement() + " - " + m));
-            System.out.println("Qual irá remover?");
+            cofrinho.moedaList.entrySet()
+                    .forEach(m ->
+                            System.out.println(counter.getAndIncrement() + " - " + m.getKey() + " - " + m.getValue().getValor()));
+            System.out.println("Qual moeda você quer retirar?");
             Scanner ler = new Scanner(System.in);
             try {
                 int opcao = ler.nextInt();
-                cofrinho.remover(cofrinho.moedaList.get(opcao - 1)); // Remove a moeda selecionada
+                ler.nextLine();
+                System.out.println("Insira o valor:");
+                double valorRetirar = ler.nextDouble();
+                ler.nextLine();
+                cofrinho.remover(opcao, valorRetirar); // Remove a moeda selecionada
             } catch (IndexOutOfBoundsException | InputMismatchException e) {
                 System.out.println("Valor incorreto.");
             }
         } else {
             System.out.println("Cofrinho vazio.Tente novamente");
         }
-
     }
-
 }

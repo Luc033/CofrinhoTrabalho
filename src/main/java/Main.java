@@ -1,7 +1,4 @@
-package edu.luc;
-
-import edu.luc.model.*;
-import edu.luc.service.*;
+import edu.luc.model.Menu;
 
 /**
  * Classe principal do projeto Cofrinho.

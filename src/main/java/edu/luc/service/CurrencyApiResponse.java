@@ -7,7 +7,6 @@ import java.util.Map;
  * Representa a resposta recebida de uma API de câmbio de moedas.
  * Contém informações sobre a taxa de conversão, dados de atualização e outros detalhes da API.
  */
-
 public class CurrencyApiResponse {
 
     // Atributos da classe
