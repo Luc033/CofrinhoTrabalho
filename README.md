@@ -140,6 +140,8 @@ classDiagram
    class TipoMoedas{
       <<enum>>
       + REAL
+      + DOLAR
+      + EURO
       + GET_ID : int
       + getId() : int
    }
