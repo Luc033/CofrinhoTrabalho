@@ -140,39 +140,65 @@ classDiagram
    class TipoMoedas{
       <<enum>>
       + REAL
+      + DOLAR
+      + EURO
       + GET_ID : int
       + getId() : int
    }
    
    Cofrinho <|--* Menu : gerencia
-   Moeda <|--* Cofrinho : depende
+   Moeda --* Cofrinho : depende
    Moeda ..> ApiConsumo : consome
    Moeda <|-- Dolar
    Moeda <|-- Euro
    Moeda <|-- Real
    Cofrinho o--|> TipoMoedas : verifica
-   ApiConsumo <|--* CurrencyApiResponse : desserializa
+   ApiConsumo --* CurrencyApiResponse : desserializa
 ```
 
 ---
 
 ## 🚀 **Como Executar**
 
-1. **Clone o repositório**:
+
+
+1. **Configure o ambiente**:
+- **Java Development Kit (JDK)** instalado (versão 11 ou superior, dependendo do seu projeto).
+- **Apache Maven** instalado (recomenda-se a versão mais recente)
+
+2. **Clone o repositório**:
    ```bash
    git clone https://github.com/Luc033/CofrinhoTrabalho.git
    cd CofrinhoTrabalho
    ```
-
-2. **Configure o ambiente**:
-   - Certifique-se de ter o **Java 17** ou superior.
-
-3. **Execute a aplicação no CMD**:
-   No diretório da classe Main.java
+   
+3. **Compile o projeto no CMD**:
+   Para garantir que todas as dependências estejam configuradas corretamente, execute:
    ```bash
-   javac Main.java
-   java Main
+   mvn clean install
    ```
+   
+3. **Execute o projeto**:
+   No diretório raiz do projeto, digite:
+   ```bash
+   mvn exec:java
+   ```
+
+4. **Saída esperada**:
+   O programa será executado e apresentará o menu inicial no terminal:
+```bash
+<===================M=E=N=U===================>
+ |                                           |
+ |  1 -- Adicionar moedas no cofrinho        |
+ |  2 -- Retirar moedas do cofrinho          |
+ |  3 -- Listar todas as moedas do cofrinho  |
+ |  4 -- Converter todas as moedas para real |
+ |                                           |
+ |  0 -- Sair                                |
+<=============================================>
+```
+
+
 ---
 
 ## 📝 **Licença**
